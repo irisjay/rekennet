@@ -53,5 +53,5 @@ sheet .off = function () {
 };
 
 
-sheet .type = (cordova .platformId === 'browser') ? 'browser' : 'cordova';
+sheet .type = 'browser';//(cordova .platformId === 'browser') ? 'browser' : 'cordova';
 sheet .on = false;
