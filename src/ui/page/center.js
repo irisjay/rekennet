@@ -132,7 +132,7 @@
 		var items_doms = items .map (function (item, n) {
 			var item_dom = dom .querySelector ('#hint[for=carousel]') .parentNode .cloneNode (true) .firstChild;
 			item_dom .removeAttribute ('template');
-			item_dom .querySelector ('img') .src = item .image;
+			item_dom .querySelector ('img') .setAttribute ('src', item .image);
 			var container_dom = dom .querySelector ('#images');
 			container_dom .insertBefore (item_dom .parentNode, container_dom .firstChild);
 			return item_dom;
@@ -172,17 +172,30 @@
             var dom = ui_info .dom .cloneNode (true);
             
 			var carousel = scrolls_ (dom, items);
-			carousel .scroll_timeline .duration (carousel .scroll_timeline .duration () * 2);
+			carousel .scroll_timeline .duration (carousel .scroll_timeline .duration () * 4);
 			carousel .scroll_timeline .play ();
             
-			var viewport_height = window .innerHeight;
-			var viewport_weight = window .innerWidth;
-			if (viewport_height / viewport_weight > 1.775) {
-				dom .setAttribute ('height', 320 * viewport_height / viewport_weight);
-				dom .setAttribute ('viewBox', '0 0 320 ' + 320 * viewport_height / viewport_weight);
-				if (dom .querySelector ('[clip-path="url(#clip-0)"]'))
-				    dom .querySelector ('[clip-path="url(#clip-0)"]') .removeAttribute ('clip-path');
-			}
+			var default_height = dom .getAttribute ('height');
+			var default_viewbox = dom .getAttribute ('viewBox');
+			var default_clip_path = dom .querySelector ('[clip-path="url(#clip-0)"]') && dom .querySelector ('[clip-path="url(#clip-0)"]') .getAttribute ('clip-path');
+			viewport_dimensions .thru (tap, function (dimensions) {
+			    var width = dimensions [0];
+			    var height = dimensions [1];
+			    
+				if (height / width > squeeze_ratio) {
+					dom .setAttribute ('height', 320 * height / width);
+					dom .setAttribute ('viewBox', '0 0 320 ' + 320 * height / width);
+					if (dom .querySelector ('[clip-path="url(#clip-0)"]'))
+					    dom .querySelector ('[clip-path="url(#clip-0)"]') .removeAttribute ('clip-path');
+				}
+				else {
+					dom .setAttribute ('height', default_height);
+					dom .setAttribute ('viewBox', default_viewbox);
+					if (dom .querySelector ('[clip-path="url(#clip-0)"]'))
+					    dom .querySelector ('[clip-path="url(#clip-0)"]') .setAttribute ('clip-path', default_clip_path);
+				}
+			})
+
             
             var back_dom = dom .querySelector ('#back[action=nav]');
             var back_stream = stream_from_click_on (back_dom);

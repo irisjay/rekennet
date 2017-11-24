@@ -10,11 +10,11 @@
 			image: 'assets/dashboard/dance.jpg',
 			nav: 'dance'
 		},
-		{
+		/*{
 			title: '計步器',
 			image: 'assets/dashboard/pedometer.jpg',
 			nav: 'pedometer'
-		},
+		},*/
 		{
 			title: '各昔食譜',
 			image: 'assets/dashboard/recipes.jpg',
@@ -346,10 +346,8 @@
 		'dashboard', function (components, unions) {
 			var nav = unions .nav;
 	
-			var viewport_height = window .innerHeight;
-			var viewport_width = window .innerWidth;
 			//TODO: adjust for svg scaling
-			var visible_minors = Math .ceil ((viewport_height * 320 / viewport_width - ui_info .major .height) / ui_info .minor .height) ;
+			var visible_minors = Math .ceil ((viewport_dimensions () [1] * 320 / viewport_dimensions () [0] - ui_info .major .height) / ui_info .minor .height) ;
 			var effective_items =	items .length - 1 >= visible_minors + 1?
 										items
 									:
@@ -363,7 +361,13 @@
 			};
 
 			var _ = interaction (transition (function (intent, license) {
-				if (intent [0] === 'select') {
+				if (intent [0] === 'back') {
+					return function (tenure) {
+						nav .state (['back']);
+						tenure .end (true);
+					}
+				}
+				else if (intent [0] === 'select') {
 					return function (tenure) {
 						nav .state ([intent [1]]);
 						tenure .end (true);
@@ -470,6 +474,9 @@
 										turn .pause ();
 										_ .intent (intent);
 									}
+									else if (intent [0] === 'back') {
+										nav .state (['back']);
+									}
 									else if (intent [0] === 'select') {
 										nav .state ([intent [1]]);
 									}
@@ -498,14 +505,27 @@
 
 			var dom = ui_info .dom .cloneNode (true);
 
-			var viewport_height = window .innerHeight;
-			var viewport_weight = window .innerWidth;
-			if (viewport_height / viewport_weight > 1.775) {
-				dom .setAttribute ('height', 320 * viewport_height / viewport_weight);
-				dom .setAttribute ('viewBox', '0 0 320 ' + 320 * viewport_height / viewport_weight);
-				if (dom .querySelector ('[clip-path="url(#clip-0)"]'))
-				    dom .querySelector ('[clip-path="url(#clip-0)"]') .removeAttribute ('clip-path');
-			}
+
+			var default_height = dom .getAttribute ('height');
+			var default_viewbox = dom .getAttribute ('viewBox');
+			var default_clip_path = dom .querySelector ('[clip-path="url(#clip-0)"]') && dom .querySelector ('[clip-path="url(#clip-0)"]') .getAttribute ('clip-path');
+			viewport_dimensions .thru (tap, function (dimensions) {
+			    var width = dimensions [0];
+			    var height = dimensions [1];
+			    
+				if (height / width > squeeze_ratio) {
+					dom .setAttribute ('height', 320 * height / width);
+					dom .setAttribute ('viewBox', '0 0 320 ' + 320 * height / width);
+					if (dom .querySelector ('[clip-path="url(#clip-0)"]'))
+					    dom .querySelector ('[clip-path="url(#clip-0)"]') .removeAttribute ('clip-path');
+				}
+				else {
+					dom .setAttribute ('height', default_height);
+					dom .setAttribute ('viewBox', default_viewbox);
+					if (dom .querySelector ('[clip-path="url(#clip-0)"]'))
+					    dom .querySelector ('[clip-path="url(#clip-0)"]') .setAttribute ('clip-path', default_clip_path);
+				}
+			})
 			
 			
 			var snaps = scrolls_ (dom, effective_items, _, reversals);
@@ -520,15 +540,18 @@
 			
 			var menu_dom = dom .querySelector ('#menu');
 			var close_menu_dom = dom .querySelector ('[action=close-menu]');
-			var menu_tween = TweenMax .fromTo (menu_dom, 0.5, {y: (568 - ui_info .close_menu .height) + Math .max ((viewport_height / viewport_weight - 1.775) * 320, 0)}, {y: 0, paused: true});
+			var menu_tween = TweenMax .fromTo (menu_dom, 0.5, {y: (568 - ui_info .close_menu .height) + Math .max ((viewport_dimensions () [1] / viewport_dimensions () [0] - squeeze_ratio) * 320, 0)}, {y: 0, paused: true});
 			var menu_timeline = new TimelineMax ({paused: true});
 			menu_timeline .add (menu_tween .play (), 0);
 			menu_timeline .add (function () {
+				menu_dom .style .visibility = 'hidden';
 				close_menu_dom .style .visibility = 'hidden';
 			}, 0);
 			menu_timeline .add (function () {
+				menu_dom .style .visibility = '';
 				close_menu_dom .style .visibility = '';
 			}, 0.01);
+			menu_dom .style .visibility = 'hidden';
 			close_menu_dom .style .visibility = 'hidden';
 
 			var menus_ = {
@@ -538,7 +561,13 @@
 				menu_tween: menu_tween,
 				menu_timeline: menu_timeline
 			};
+			
+			
+			var back_dom = dom .querySelector ('#back[action=nav]');
 
+			stream_from_click_on (back_dom) .thru (tap, function () {
+				_ .intent (['back']);
+			});
 			stream_from_click_on (close_menu_dom) .thru (tap, function () {
 				_ .intent (['close-menu']);
 			});

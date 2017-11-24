@@ -28,6 +28,7 @@ body {
     touch-action: none;
     overflow-x: hidden;
     overflow-y: hidden;
+    background: black;
 }
 
 @media screen and (max-aspect-ratio: 568/320) {
@@ -37,8 +38,17 @@ body {
 }
 
 html {
-    background: #9edeff;
-    overflow-x: hidden;
-    overflow-y: hidden;
+    background: #9edeff !important;
+    overflow-x: hidden !important;
+    overflow-y: hidden !important;
     height: 100%;
+}
+
+[squeezed] {
+    background: black;
+}
+
+* {
+    -moz-user-select: none;
+    -webkit-user-select: none;
 }

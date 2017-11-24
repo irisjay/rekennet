@@ -40,7 +40,7 @@
 </clipPath>
 <g id="item /major /template /hint=clip" clip-path="url(#clip-3)">
 <g id="background">
-<g id="hint /for=image /style=&#34;    width: 100%; height: 100%;&#34;">
+<g id="hint /for=image /style=&#34;width: 100%; height: 100%;&#34;">
 <use xlink:href="#path0_fill" transform="translate(479 1914)" fill="url(#paint4_linear)" fill-opacity="0.01"/>
 </g>
 <g id="/example">

@@ -335,7 +335,7 @@ function streamToString() {
  * Create a stream with no dependencies and no value
  * @return {Function} a flyd stream
  */
-function createStream() {s .x = new Error () .stack;
+function createStream() {//s .x = new Error () .stack;
   function s(n) {
     if (arguments.length === 0) return s.val
     updateStreamValue(s, n)

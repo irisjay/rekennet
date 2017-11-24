@@ -27,6 +27,7 @@ var _routing = {
         start: routes .dashboard
     },
     dashboard: {
+        back: routes .splash,
         po_leung_kuk: routes .po_leung_kuk,
         herbal_life: routes .herbal_life,
         pedometer: routes .pedometer,

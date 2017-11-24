@@ -5,6 +5,7 @@
     		<ul class="itemset">
     			<section each={ args .items }>
     			    <div class="itemheader" if={ _item .header }>{ _item .header }</div>
+    			    <div class="stepstones" if={ _item .header }></div>
         			<div class="itemcontainer" each={ _item .items }>
         				<li><a title={ _item .title } subtext={ _item .subtext }>
         					<img class="appicon" src={ _item .image }>
@@ -89,6 +90,7 @@
 }
 & {
     .Sheet {
+        left: 0;
         padding: 10px;
     	transition: transform 0.25s ease-out;
     	visibility: hidden;
@@ -154,8 +156,13 @@
     }
     
     .itemset .itemheader {
+        transform: translateY(-1.1em) translateX(0.25em);
+        position: absolute;
         height: 1em;
-        transform: translateY(-0.9em) translateX(0.25em);
+    }
+
+    .itemset .stepstones {
+        height: 0.8em;
     }
     
     .itemset .itemcontainer {

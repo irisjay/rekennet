@@ -84,8 +84,19 @@
             
             var dom = ui_info .dom .cloneNode (true);
             
-            if (window .innerHeight / window .innerWidth > 1.775)
-                dom .setAttribute ('style', 'height: 100%; width: auto;');
+			var default_style = dom .getAttribute ('style');
+			viewport_dimensions .thru (tap, function (dimensions) {
+			    var width = dimensions [0];
+			    var height = dimensions [1];
+			    
+				if (height / width > squeeze_ratio) {
+                    dom .setAttribute ('style', 'height: 100%; width: auto;');
+				}
+				else {
+					dom .setAttribute ('style', default_style || '');
+				}
+			})
+
                 
             var back_dom = dom .querySelector ('#back[action=nav]');
             var back_stream = stream_from_click_on (back_dom);

@@ -21,7 +21,7 @@ var report = from (function (_) {
     console .error (e);
 })
 
-Promise .longStackTraces ();
+//Promise .longStackTraces ();
 
 /*
 Use app
