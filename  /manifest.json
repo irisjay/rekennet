@@ -1,0 +1,12 @@
+{
+  "background_color": "#FFF",
+  "display": "standalone",
+  "name": "一觸即動",
+  "short_name": "一觸即動",
+  "version": "com.kodingkingdom.poleungkuk.onetouch17",
+  "description": "一觸即動 ·「營 · 智」健康活躍生活手機應用程式",
+  "author": "保良局",
+  "icons": [],
+  "orientation": "portrait",
+  "start_url": "index.html"
+}

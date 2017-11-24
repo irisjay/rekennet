@@ -1,0 +1,3 @@
+RewriteEngine On
+RewriteRule ^t-1$ http://52.15.185.191/o/t-1
+RewriteRule ^t-2$ http://18.221.198.187/o/t-2
