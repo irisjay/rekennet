@@ -1,0 +1,54 @@
+svg [template] {
+    visibility: hidden;
+}
+svg [example] {
+    visibility: hidden;
+}
+svg > :not(defs), svg > :not(defs) * {
+    pointer-events: none;
+}
+svg [input], svg [input] * {
+    pointer-events: visiblePainted;
+}
+svg [scroll], svg [scroll] * {
+    pointer-events: visiblePainted;
+}
+svg [interactable], svg [interactable] * {
+    pointer-events: visiblePainted;
+}
+
+[page] {
+	width: 100%;
+	height: auto;
+	position: absolute;
+}
+
+body {
+    font-family: Ubuntu, cwTeXHei !important;
+    touch-action: none;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    background: black;
+}
+
+@media screen and (max-aspect-ratio: 568/320) {
+    body {
+        overflow-y: scroll;
+    }
+}
+
+html {
+    background: #9edeff !important;
+    overflow-x: hidden !important;
+    overflow-y: hidden !important;
+    height: 100%;
+}
+
+[squeezed] {
+    background: black;
+}
+
+* {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}

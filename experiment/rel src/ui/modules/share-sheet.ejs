@@ -1,0 +1,376 @@
+<!-- adapted from https://gist.github.com/ScottSmith95/4417738 -->
+<&>
+    <div class="Sheet unselected">
+    	<div class="SheetContent">
+    		<ul class="itemset">
+    			<section each={ args .items }>
+    			    <div class="itemheader" if={ _item .header }>{ _item .header }</div>
+    			    <div class="stepstones" if={ _item .header }></div>
+        			<div class="itemcontainer" each={ _item .items }>
+        				<li><a title={ _item .title } subtext={ _item .subtext }>
+        					<img class="appicon" src={ _item .image }>
+        					{ _item .title }
+        				</a></li>
+        			</div>
+    			</section>
+    			
+    			<!--<section class="browsers">
+    			<div class="itemcontainer">
+    				<li><a href="https://twitter.com/ScottSmith95">
+    					<img class="appicon" src="https://files.scottshar.es/Share%20Sheets/app-icons/Safari.png" alt="">
+    					Right here
+    				</a></li>
+    			</div>
+    			<div class="itemcontainer">
+    				<li><a href="googlechrome://twitter.com/ScottSmith95">
+    					<img class="appicon" src="https://files.scottshar.es/Share%20Sheets/app-icons/Chrome.png" alt="">
+    					Chrome
+    				</a></li>
+    			</div>
+    			<div class="itemcontainer">
+    				<li><a href="ophttp://twitter.com/ScottSmith95">
+    					<img class="appicon" src="https://files.scottshar.es/Share%20Sheets/app-icons/1Password.png" alt="">
+    					1Password
+    				</a></li>
+    			</div>
+    			</section>-->
+    		</ul>
+    		<h2 class="cancel">Cancel</h2>
+    	</div>
+    </div>
+</&>
+
+<style>
+/* Animations */
+@keyframes fade-in {
+	0% {
+		visibility: visible;
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
+@keyframes fade-out {
+	0% {
+		opacity: 1;
+	}
+	100% {
+		visibility: hidden;
+		opacity: 0;
+	}
+}
+@at-root {
+    body > {
+        /* Share Sheets */
+        .darklayer {
+        	display: none;
+        	position: fixed;
+        	z-index: 9;
+        	top: 0;
+        	right: 0;
+        	bottom: 0;
+        	left: 0;
+        	background-color: rgba(0,0,0,0.65);
+        }
+        
+        .darklayer.loaded {
+        	display: block;
+        }
+        
+        .darklayer.on {
+        	animation: fade-in 0.25s ease-out forwards;
+        }
+        
+        .darklayer.off {
+        	animation: fade-out 0.25s ease-out forwards;
+        }
+    }
+}
+& {
+    .Sheet {
+        left: 0;
+        padding: 10px;
+    	transition: transform 0.25s ease-out;
+    	visibility: hidden;
+    	position: fixed;
+    	z-index: 10;
+    	bottom: 0;
+    	width: 100%;
+    	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    	font-weight: 400;
+    	user-select: none;
+    	margin: 0 auto;
+    }
+    
+    .Sheet.loaded {
+    	visibility: visible;
+    }
+    
+    .Sheet.unselected {
+    	transform: translateY(100%);
+    }
+    
+    .Sheet.selected {
+    	transform: translateY(0%);
+    }
+    
+    .SheetContent {
+    	max-width: 375px;
+    	margin: 0 auto;
+    }
+    
+    .itemset {
+    	text-align: left;
+    	background: rgba(248,248,248,0.95);
+    	backdrop-filter: blur(5px);
+    	padding: 1.5em 0 1em;
+    	border-radius: 15px;
+    	margin: 0.6rem auto 0.5rem;
+    }
+    
+    .itemset section {
+    	overflow-x: scroll;
+    	-webkit-overflow-scrolling: touch;
+    	padding: 20px 1.5%;
+    	white-space: nowrap;
+    	border-width: 1px;
+    	border-style: solid; 
+    	border-image: linear-gradient(to right, #C2C2C6 0%, #D6D6DA 5%, #D6D6DA 95%, #C2C2C6 100%) 100% 0 0 0;
+    }
+    
+    .itemset section:first-of-type {
+    	padding-top: 0;
+    	border: none;
+    }
+    
+    .itemset section:last-of-type {
+    	padding-bottom: 0;
+    }
+    
+    .itemset section:only-child {
+    	padding-top: 0;
+    	padding-bottom: 0;
+    	border: none;
+    }
+    
+    .itemset .itemheader {
+        transform: translateY(-1.1em) translateX(0.25em);
+        position: absolute;
+        height: 1em;
+    }
+
+    .itemset .stepstones {
+        height: 0.8em;
+    }
+    
+    .itemset .itemcontainer {
+    	display: inline;
+    	margin: 0;
+    	text-align: center;
+    }
+    
+    .itemset li {
+    	display: inline-block;
+    	width: 22.5%;
+    	height: 100%;
+    	margin: 0 auto;
+    	color: #000000;
+    	font-size: 12px;
+    	line-height: 1.3em;
+    	text-align: center;
+    	vertical-align: top;
+    	white-space: normal;
+    }
+    
+    .itemset li img {
+    	border-radius: 10px;
+    }
+    
+    .itemset li a {
+    	color: inherit;
+    	text-decoration: none;
+    }
+    
+    .appicon {
+    	width: auto;
+    	height: 60px;
+    }
+    
+    .cancel {
+    	display: block;
+    	width: 100%;
+    	color: #0076FF;
+    	background: rgba(248,248,248,1);
+    	font-size: 20px;
+    	font-weight: 600;
+    	text-align: center;
+    	text-decoration: none;
+    	cursor: pointer;
+    	-webkit-tap-highlight-color: transparent;
+    	padding: 0.8em 0;
+    	border: none;
+    	border-radius: 15px;
+    	margin: 0.5rem auto 0.6rem;
+    }
+    
+    .cancel.touched,
+    .cancel:active {
+    	background: rgba(232, 232, 235, 0.95);
+    }
+    
+    /* Landscape */
+    @media (orientation: landscape) {
+    	.itemset .itemcontainer {
+    		margin: 0 7px;
+    	}
+    
+    	.itemset .itemcontainer:first-child {
+    		margin-left: 0;
+    	}
+    
+    	.itemset .itemcontainer:last-child {
+    		margin-right: 0;
+    	}
+    }
+    
+    /* Tablet */
+    @media (min-width: 45em) {
+    	.SheetContent {
+    		max-width: 450px;
+    	}
+    	
+    	.itemset section {
+    		padding-right: 2.5%;
+    		padding-left: 2.5%;
+    	}
+    
+    	.itemset .itemcontainer {
+    		width: 24.5%;
+    	}
+    
+    	.itemset .itemcontainer {
+    		margin: 0 0.25em;
+    	}
+    
+    	.itemset .itemcontainer:first-child {
+    		margin-left: 0;
+    	}
+    
+    	.itemset .itemcontainer:last-child {
+    		margin-right: 0;
+    	}
+    	
+    	.itemset li {
+    		width: 20%;
+    	}
+    	
+    	.appicon {
+    		height: 75px;
+    	}
+    }
+}
+</style>
+<script>
+    self .on ('mount', function () {
+        self .root .toggle = function () {
+            toggleSheet (self .root .querySelector ('.Sheet'));
+        };
+        self .root .selected = stream ();
+    
+        [] .forEach .call (self .root .querySelectorAll ('.itemcontainer a[title]'), function (a) {
+            a .addEventListener ('click', function () {
+        		offSelectedSheet();
+                self .root .selected (a .getAttribute ('subtext'));
+            })
+        });
+    
+        // Handles all cancel button behviours.
+        [] .forEach .call (self .root .querySelectorAll('.cancel'), function (element) {
+        	element.addEventListener('touchstart', function() {
+        		element.classList.add('touched');
+        	});
+        	
+        	element.addEventListener('touchend', function() { 
+        		element.classList.remove('touched');
+        	});
+        	
+        	element.addEventListener('click', function() {
+        		offSelectedSheet();
+        		self .root .selected (undefined);
+        	});
+        })
+    });
+    
+
+    // Handles opening the sheets.
+    function toggleSheet (sheet) {
+    	if (sheet.classList.contains('selected') ) {
+    		sheet.classList.remove('selected');
+    		sheet.classList.add('unselected');
+    		sheet.classList.remove('loaded');
+    		sheet.blur();
+    		
+    		layer_off();
+    	}
+    	else {
+    		sheet.classList.add('selected');
+    		sheet.classList.remove('unselected');
+    		sheet.classList.add('loaded');
+    		sheet.focus();
+    		
+    		layer_on();
+    	}
+    }
+    
+    var layer_on = function () {
+        if (! document.querySelector('body > .darklayer')) addDarklayer ();
+        onDarkLayer ();
+    };
+    var layer_off = function () {
+        if (document.querySelector('body > .darklayer')) {
+            offDarkLayer ();
+            setTimeout (removeDarkLayer, 250);
+        }
+    };
+    
+    
+    // Handles adding `<div class="darklayer"></div>` to DOM.
+    function addDarklayer() {
+    	var element = document.createElement("div");
+    	element.setAttribute('class', 'darklayer off');
+    	element.addEventListener('click', function() {
+        	offSelectedSheet();
+        });
+    	document.body.appendChild(element);
+    }
+    
+    function onDarkLayer() {
+    	var darkLayer = document.querySelector('body > .darklayer');
+    	darkLayer.classList.add('loaded');
+    	darkLayer.classList.remove('off');
+    	darkLayer.classList.add('on');
+    }
+    
+    function offDarkLayer() {
+    	var darkLayer = document.querySelector('body > .darklayer');
+    	darkLayer.classList.remove('on');
+    	darkLayer.classList.add('off');
+    }
+    
+    function removeDarkLayer() {
+    	var darkLayer = document.querySelector('body > .darklayer');
+    	darkLayer .parentNode .removeChild (darkLayer);
+    }
+    
+    // Close selected sheet and turn darklayer off.
+    function offSelectedSheet() {
+    	selectedSheet = document.querySelector('.Sheet.selected');
+    	selectedSheet.blur();
+    	selectedSheet.classList.remove('selected');
+    	selectedSheet.classList.add('unselected');
+    	
+    	offDarkLayer();
+    }
+</script>
