@@ -1,0 +1,31 @@
+<&>
+    <modules-modal-holder>
+        <modules-loading-item />
+        <yield />
+    </modules-modal-holder>
+</&>
+
+<style>
+@require css-components;
+& {
+    @extend fullscreen-holder;
+
+    > modules-modal-holder {
+        > item {
+            color: rgba(255, 255, 255, 0.85);
+            text-align: center;
+            
+            -> {modules-loading-item} {
+                > div > spinner:after {
+                    left: calc(50% - 16px);
+                    top: calc(50% - 16px);
+                    width: 64px;
+                    height: 64px;
+                    border: 1px solid #fbfbfb;
+                    border-color: transparent transparent rgba(255, 255, 255, 0.85) rgba(255, 255, 255, 0.7) !important;
+                }
+            }
+        }
+    }
+}
+</style>

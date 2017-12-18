@@ -206,17 +206,17 @@ module .exports .strip_long_strings = function (src, obj_symbol) {
 							.filter (function (x) {
 								return x .type === 'String' && x .value .length > 1000;
 							})
-	var long_obj = R .pipe (
-		R .map (function (x) {
+	var as_obj = [long_strings]
+		.map (R .map (function (x) {
 			return [x .range [0], eval (x .value)]
-		}),
-		R .fromPairs
-	) (long_strings .reverse ());
-	long_strings .forEach (function (q) {
-		src = src .slice (0, q .range [0]) + obj_symbol + ' [' + q .range [0] + ']' + src .slice (q .range [1])
-	});
+		}))
+		.map (R .fromPairs)
+	[0];
+	var stripped_src = R .reverse (long_strings) .reduce (function (post_stripped, long_string) {
+		return post_stripped .slice (0, long_string .range [0]) + obj_symbol + ' [' + long_string .range [0] + ']' + post_stripped .slice (long_string .range [1]);
+	}, src);
 	return {
-		src: src,
-		strs: `var ${obj_symbol} = ${JSON .stringify (long_obj, null, 4)}`
+		src: stripped_src,
+		strs: `var ${obj_symbol} = ${JSON .stringify (as_obj, null, 4)}`
 	};
 }

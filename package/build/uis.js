@@ -2,7 +2,7 @@ var R = require ('ramda');
 var jsdom = require ('jsdom');
 var esprima = require ('esprima');
 
-var uis_utils_src = require ('./config') .paths .uis .utils_src;
+var pre_scripts = require ('./pre_scripts');
 
 var svg_tags = [ "a", "altGlyph", "altGlyphDef", "altGlyphItem", "animate", "animateColor", "animateMotion", "animateTransform", "circle", "clipPath", "color-profile", "cursor", "defs", "desc", "ellipse", "feBlend", "feColorMatrix", "feComponentTransfer", "feComposite", "feConvolveMatrix", "feDiffuseLighting", "feDisplacementMap", "feDistantLight", "feFlood", "feFuncA", "feFuncB", "feFuncG", "feFuncR", "feGaussianBlur", "feImage", "feMerge", "feMergeNode", "feMorphology", "feOffset", "fePointLight", "feSpecularLighting", "feSpotLight", "feTile", "feTurbulence", "filter", "font", "font-face", "font-face-format", "font-face-name", "font-face-src", "font-face-uri", "foreignObject", "g", "glyph", "glyphRef", "hkern", "image", "line", "linearGradient", "marker", "mask", "metadata", "missing-glyph", "mpath", "path", "pattern", "polygon", "polyline", "radialGradient", "rect", "script", "set", "stop", "style", "svg", "switch", "symbol", "text", "textPath", "title", "tref", "tspan", "use", "view", "vkern" ];
 var capital_svg_tags = svg_tags .filter (function (x) {
@@ -35,7 +35,7 @@ var pre_transform = function (source, transformer) {
 
 var window = (new jsdom .JSDOM ()) .window;
 with (window) {
-	eval (file (uis_utils_src));
+	eval (pre_scripts);
 	
 	var hydrators = [];
 	var dehydrate = function (data) {

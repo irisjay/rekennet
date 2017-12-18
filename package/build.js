@@ -20,13 +20,16 @@ var assets_dist = require ('./build/config') .paths .assets .dist;
 
 //utils
 var fs = require ('fs-extra');
+var child_process = require ('child_process');
 var time = require ('./build/util') .time;
 var file = require ('./build/util') .file;
 var files = require ('./build/util') .files;
 var write = require ('./build/util') .write;
 
+var amas = require ('./build/amas');
 var riot_tags = require ('./build/riot');
 var uis = require ('./build/uis');
+var styles = require ('./build/styles');
 					
 					
 					
@@ -42,93 +45,110 @@ time ('build', function () {
 		fs .unlinkSync (file_path)
 	});
 	fs .copySync (primary_src, primary_dist);
-	files ('.js') (scripts_src)
-		.forEach (function (path_/* of file*/) {
-			var name = path_ .split ('/') .reverse () [0];
-			var dest_path = path .join (scripts_dist, name);
-			fs .copySync (path_, dest_path);
-		});
-	files ('') (assets_src)
-		.forEach (function (path_/* of file*/) {
-			var name = path_ .slice (assets_src .length + 1);
-			var dest_path = path .join (assets_dist, name);
-			fs .copySync (path_, dest_path);
-		});
-	write (uis_dist) (
-		files ('.js') (uis_src)
-			.map (function (_path) {
-				var relative_path = _path .slice (uis_src .length + 1);
-				var name =	relative_path
+	
+	[amas .collect ('.js') (uis_src)] 
+		.map (R .toPairs)
+		.map (R .map (R .applySpec ({
+			_path: R .prop (0),
+			contents: R .prop (1)
+		})))
+		.map (R .map (function (_) {
+			var relative_path = _ ._path .slice (uis_src .length + 1);
+			var name =	R .head (
+							relative_path
 								.split ('/') .join ('_')
-								.split ('.') [0];
-											
-				return time ('preprocessing ' + name, function () {
-					return uis .process (file (_path));
-				})
+								.split ('.')
+						);
+										
+			return time ('preprocessing ' + name, function () {
+				return uis .process (_ .contents);
 			})
-			.map (function (src) {
-			    return src + ';\n'
-			})
-			.reduce (function (sum, next) { return sum + next; }, '')
-	);
-	write (uis_hydrators_dist) (time ('serializing hydrators', uis .hydration));
-	files ('.ejs') (tags_src)
-		.forEach (function (path) {
-			var tag_relative_path = path .slice (tags_src .length + 1);
-			var tag_name =	tag_relative_path
-								.split ('/') .join ('-')
-								.split ('.') [0];
-			R .uniq ([tag_name, tag_name .split ('-') .reverse () [0]])
+		}))
+		.map (R .map (function (src) {
+		    return src + ';\n'
+		}))
+		.map (R .reduce (function (sum, next) {
+			 return sum + next; 
+		}, ''))
+		.forEach (function (_) {
+			write (uis_dist) (_);
+			write (uis_hydrators_dist) (time ('serializing hydrators', uis .hydration));
+		});
+
+	[amas .collect ('.ejs') (tags_src)]
+		.map (R .toPairs)
+		.map (R .map (R .applySpec ({
+			_path: R .prop (0),
+			contents: R .prop (1)
+		})))
+		.map (R .map (function (_) {
+			var tag_relative_path = _ ._path .slice (tags_src .length + 1);
+			var tag_name =	R .head (
+								tag_relative_path
+									.split ('/') .join ('-')
+									.split ('.')
+							);
+			return R .merge (_, {
+				name: tag_name
+			});
+		}))
+		.map (R .tap (R .forEach (function (_) {
+			R .uniq ([_ .name, R .last (_ .name .split ('-'))])
 				.forEach (function (name) {
 					if (! riot_tags .name_resolution [name]) riot_tags .name_resolution [name] = [];
 					riot_tags .name_resolution [name] .push (path)
 				})
+		})))
+		.map (R .map (function (_) {
+			return time ('parsing ' + _ .name, function () {
+				return riot_tags .parse (_ .contents, _ .name);
+			})
+		}))
+		//.map (R .values)
+		.map (R .reduce (function (sum, next) { return sum + next; }, ''))
+		.map (function (x) {
+			return time ('compiling', function () {
+				return riot_tags .compile (x);
+			})
+		})
+		.map (function (x) {
+			return time ('stripping long strings', function () {
+				return riot_tags .strip_long_strings (x);
+			})
+		})
+		.forEach (function (riot_scripts) {
+			var _ = riot_scripts .src;
+			var strings = riot_scripts .strs;
+			
+			write (tags_dist) (_);
+			write (tags_strs_dist) (strings);
 		});
-	[files ('.ejs') (tags_src)
-		.map (function (tag_path) {
-			var tag_relative_path = tag_path .slice (tags_src .length + 1);
-			var tag_name =	tag_relative_path
-								.split ('/') .join ('-')
-								.split ('.') [0];
-										
-			return time ('parsing ' + tag_name, function () {
-				return riot_tags .parse (file (tag_path), tag_name);
-			})
-		})
-		.reduce (function (sum, next) { return sum + next; }, '')
-	]
-	.map (function (x) {
-		return time ('compiling', function () {
-			return riot_tags .compile (x);
-		})
-	})
-	.map (function (x) {
-		return time ('stripping long strings', function () {
-			return riot_tags .strip_long_strings (x);
-		})
-	})
-	.forEach (function (riot_scripts) {
-		var _ = riot_scripts .src;
-		var strings = riot_scripts .strs;
-		
-		write (tags_dist) (_);
-		write (tags_strs_dist) (strings);
-	});
-	write (styles_dist) (
-		[files ('.css') (styles_src) .concat (files ('.scss') (styles_src))
-			.map (function (path) {
-				return {
-					names: [path .split ('/') .reverse () [0] .split ('.') [0]],
-					path: path .slice (styles_src .length + 1),
-					dependencies: [],
-					metastyles: file (path)
-				}
-			})
-			.concat (
-			    R .keys (riot_tags .metastyles_resolution) .map (function (name) {
+
+	[
+		function (_) {
+			return R .concat (_ .scss_seeds, _ .riot_style_seeds);
+		} ({
+			scss_seeds: [R .merge (amas .collect ('.css') (styles_src), amas .collect ('.scss') (styles_src))] 
+				.map (R .toPairs)
+				.map (R .map (R .applySpec ({
+					_path: R .prop (0),
+					contents: R .prop (1)
+				})))
+				.map (R .map (function (_) {
 					return {
-						names: R .union ([name, name .split ('-') .reverse () [0]], []),
-						path: name + '.css',
+						names: [R .head (R .last (_ ._path .split ('/')) .split ('.'))],
+						path: _ ._path .slice (styles_src .length + 1),
+						dependencies: [],
+						metastyles: _ .contents
+					}
+				}))
+			[0],
+			riot_style_seeds: [riot_tags .metastyles_resolution] 
+				.map (R .keys)
+				.map (R .map (function (name) {
+					return {
+						names: R .uniq ([name, R .last (name .split ('-'))]),
+						path: name,
 						dependencies: [],
 						metastyles: [(riot_tags .metastyles_resolution [name] || []) .join ('\n')]
 							/* implements custom selector */
@@ -143,21 +163,52 @@ time ('build', function () {
 										'}';
 							})
 						[0]
-					}
+					};
 				}))
-		]
-		.map (function (build_nodes) {
-	        var styles = require ('./build/styles');
-	
-	        var tree = styles .weave (build_nodes);
-	
-			styles .invalidate ()
-			var answer = styles .grow (tree);
-			styles .clean ();
-			for (var i in answer)
-				if (answer [i] .path === '*')
-					return answer [i] .styles
-			throw 'can\'t find answer'
-		}) [0]
-    );
+			[0]
+		})
+	]
+	.map (function (build_nodes) {
+        var tree = styles .weave (build_nodes);
+
+		styles .invalidate ()
+		var answer = styles .grow (tree);
+		styles .clean ();
+
+		return answer 
+	})
+	.map (R .chain (function (branch) {
+		//console .log ('debug: ' + JSON .stringify (R .omit (['styles', 'metastyles']) (branch), null, 4));
+		return branch .path === '*' ?
+			[branch .styles]
+		:
+			[];
+	}))
+	.map (R .tap (function (branches) {
+		if (branches .length !== 1)
+			throw 'can\'t find answer' + '\n\n' + '\n' +
+				'branches length is ' + branches .length  
+	}))
+	.map (R .head)
+	.forEach (write (styles_dist));
+
+	[amas .collect ('.js') (scripts_src)] 
+		.map (R .toPairs)
+		.map (R .map (R .applySpec ({
+			_path: R .prop (0),
+			contents: R .prop (1)
+		})))
+		.forEach (R .forEach (function (_) {
+			var name = R .last (_ ._path .split ('/'));
+			var dest_path = path .join (scripts_dist, name);
+			write (dest_path) (_ .contents);
+		}));
+
+	files ('') (assets_src)
+		.forEach (function (_path/* of file*/) {
+			var name = _path .slice (assets_src .length + 1);
+			var dest_path = path .join (assets_dist, name);
+			fs .copySync (_path, dest_path);
+		});
+
 });

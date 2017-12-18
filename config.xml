@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.kodingkingdom.poleungkuk.onetouch17" version="0.97" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget android-versionCode="109504" id="com.kodingkingdom.poleungkuk.onetouch17" version="0.971" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>一觸即動</name>
     <description>一觸即動 ·「營 · 智」健康活躍生活手機應用程式</description>
     <author email="plkinfo@poleungkuk.org.hk" href="http://www.poleungkuk.org.hk/">保良局</author>

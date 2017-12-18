@@ -3,8 +3,12 @@ var path = require ('path');
 var base_path = path .join (__dirname, '/../..');
 
 module .exports = {
+	pre: {
+		scripts: [ '_pre.js' ]
+	},
 	paths: {
 		src: path .join (base_path, '/src'),
+		dist: path .join (base_path, '/www'),
 		primary: {
 			src: path .join (base_path, '/src/&.html'),
 			dist: path .join (base_path, '/www/index.html')
@@ -17,15 +21,13 @@ module .exports = {
 			src: path .join (base_path, '/src/frames')
 		},
 		uis: {
-			utils_src: path .join (base_path, '/src/scripts/modules/pre.js'),
 			src: path .join (base_path, '/src/ui/page'),
 			dist: path .join (base_path, '/www/scripts/ui.js'),
 			hydrators_dist: path .join (base_path, '/www/scripts/ui-hydrators.js')
 		},
 		scripts: {
 			src: path .join (base_path, '/src/scripts'),
-			dist: path .join (base_path, '/www/scripts'),
-			pre: path .join (base_path, '/src/scripts/modules/pre.js')
+			dist: path .join (base_path, '/www/scripts')
 		},
 		pages: {
 			src: path .join (base_path, '/src/ui/page')
@@ -41,6 +43,9 @@ module .exports = {
 			
 			cache: path .join (base_path, '/temp/styles/cache'),
 			copy: path .join (base_path, '/temp/styles/copy')
+		},
+		ama: {
+			cache: path .join (base_path, '/temp/ama/cache')
 		}
 	}
 }

@@ -137,7 +137,7 @@ var grow_nodes =	function (baby_nodes, grown_nodes) {
 											for (var i in node) {
 												node_ [i] = node [i];
 											}
-											node_ .styles =	time ('cached extend ' + path_, () =>
+											node_ .styles =	time ('cached extension ' + node .path, () =>
 																cache_at (path_ .slice (styles_cache .length + 1), dependency_styles + node .metastyles, () =>
 																	extend (dependency_styles, metastyles)));
 											return node_;
@@ -172,18 +172,17 @@ var grow_nodes =	function (baby_nodes, grown_nodes) {
 							);
 						}
 						
-						return	new_grown_nodes
-									.concat (grow_nodes (new_baby_nodes, new_grown_nodes));
+						return grow_nodes (new_baby_nodes, new_grown_nodes);
 					};
 				
 var cache_at =	function (name, copy_source, cache_source) {
-					var copy_path = path .join (styles_copy, name) .replace (/\.css$|\.scss$/, '.cache.active')
-					var cache_path = path .join (styles_cache, name) .replace (/\.css$|\.scss$/, '.cache.active')
+					var copy_path = path .join (styles_copy, name) .replace (/\.css$|\.scss$/, '.cache-invalidated')
+					var cache_path = path .join (styles_cache, name) .replace (/\.css$|\.scss$/, '.cache-invalidated')
 					if (fs .existsSync (copy_path) && file (copy_path) === copy_source) {
 						var cache = file (cache_path)
 						
-						var new_copy_path = copy_path .replace (/\.cache.active$/, '.cache.new')
-						var new_cache_path = cache_path .replace (/\.cache.active$/, '.cache.new')
+						var new_copy_path = copy_path .replace (/\.cache-invalidated$/, '.cache-refreshed')
+						var new_cache_path = cache_path .replace (/\.cache-invalidated$/, '.cache-refreshed')
 						fs .renameSync (copy_path, new_copy_path)
 						fs .renameSync (cache_path, new_cache_path)
 						
@@ -192,8 +191,8 @@ var cache_at =	function (name, copy_source, cache_source) {
 					else {
 						var cache = cache_source ();
 						
-						var new_copy_path = path .join (styles_copy, name) .replace (/\.css$|\.scss$/, '.cache.new')
-						var new_cache_path = path .join (styles_cache, name) .replace (/\.css$|\.scss$/, '.cache.new')
+						var new_copy_path = path .join (styles_copy, name) .replace (/\.css$|\.scss$/, '.cache-refreshed')
+						var new_cache_path = path .join (styles_cache, name) .replace (/\.css$|\.scss$/, '.cache-refreshed')
 						write (new_copy_path) (copy_source);
 						write (new_cache_path) (cache);
 						
@@ -210,7 +209,7 @@ var invalidate =	function (dir) {
 							}
 							else {
 								if (file_path .endsWith ('.cache')) {
-									fs .renameSync (file_path, file_path .replace (/\.cache$/, '.cache.active'))
+									fs .renameSync (file_path, file_path .replace (/\.cache$/, '.cache-invalidated'))
 								}
 							}
 						})
@@ -224,11 +223,11 @@ var refresh =	function (dir) {
 							refresh (file_path)
 						}
 						else {
-							if (file_path .endsWith ('.cache') || file_path .endsWith ('.cache.active')) {
+							if (file_path .endsWith ('.cache') || file_path .endsWith ('.cache-invalidated')) {
 								fs .unlinkSync (file_path)
 							}
-							if (file_path .endsWith ('.cache.new')) {
-								fs .renameSync (file_path, file_path .replace (/\.cache\.new$/, '.cache'))
+							if (file_path .endsWith ('.cache-refreshed')) {
+								fs .renameSync (file_path, file_path .replace (/\.cache-refreshed$/, '.cache'))
 							}
 						}
 					})
