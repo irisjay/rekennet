@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "setup": "./package/setup.sh",
+    "refresh": "./package/refresh.sh",
     "build": "./package/build.sh",
     "serve": "./package/serve.sh"
   },
