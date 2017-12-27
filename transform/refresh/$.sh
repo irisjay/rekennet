@@ -4,7 +4,7 @@ cd "$(sudo dirname "$(readlink -f "$0")")"
 if [ -f ./amas.sh ]; then
 	. ./amas.sh
 elif [ -f ./.amas.sh ]; then
-	. ./_amas.sh
+	. ./.amas.sh
 else
 	>&2 echo "amas refresher not found"
 	exit 1
@@ -13,6 +13,7 @@ fi
 cd "$(npm root | xargs dirname)"
 
 {
+	amas_refresh src/hci/assets
 	amas_refresh transform/build
 	amas_refresh transform/deploy
 	amas_refresh transform/refresh
