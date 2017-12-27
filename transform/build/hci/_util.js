@@ -44,6 +44,8 @@ module .exports = {
 										return module .exports .files (extension) (file);
 									else if (file .endsWith (extension))
 										return [file];
+									else
+										return [];
 								})) [0]
 						}
 			},

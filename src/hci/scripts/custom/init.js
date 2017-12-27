@@ -19,18 +19,22 @@ var report = from (function (_) {
 						};
 }) .thru (tap, function (e) {
     console .error (e);
-})
+});
 
 //Promise .longStackTraces ();
 
 /*
 Use app
 */
-Promise .all ([
-    promise_of (function (x) {
-        document .addEventListener ('deviceready', x);
-    })
-])
+( typeof (cordova) !== 'undefined' ?
+	    promise_of (function (x) {
+	        document .addEventListener ('deviceready', x);
+	    })
+	:
+	    promise_of (function (x) {
+	        document .addEventListener ('DOMContentLoaded', x);
+	    })		
+)
 .then (function () {
 	window .ui_ = master_ui ();
 });

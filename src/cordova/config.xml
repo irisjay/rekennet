@@ -31,4 +31,7 @@
     <plugin name="cordova-plugin-pedometer" spec="^0.4.1" />
     <plugin name="cordova-plugin-hidden-statusbar-overlay" spec="git+https://github.com/katzer/cordova-plugin-hidden-statusbar-overlay.git" />
     <plugin name="cordova-plugin-actionsheet" spec="^2.3.3" />
+    <engine name="browser" spec="^5.0.1" />
+    <engine name="android" spec="~7.0.0" />
+    <engine name="ios" spec="~4.5.4" />
 </widget>

@@ -1,8 +1,0 @@
-build				ok
-cordova				not ok
-deploy				not ok
-install				ok
-refresh				ok
-serve				ok
-test				ok
-webapp				ok

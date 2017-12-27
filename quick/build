@@ -2,4 +2,4 @@
 cd "$(sudo dirname "$(readlink -f "$0")")"
 cd ..
 
-exec "./transform/build/hci/$.sh"
+./transform/build/hci/$.sh

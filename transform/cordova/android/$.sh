@@ -15,7 +15,7 @@ nvm use 7.1.0 > /dev/null
 	exit 1
 }
 
-node "$.js" || {
-	echo "cordova/$ failed"
+./_$.sh || {
+	echo "cordova/android failed"
 	exit 1
 }

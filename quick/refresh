@@ -2,4 +2,4 @@
 cd "$(sudo dirname "$(readlink -f "$0")")"
 cd "$(npm root | xargs dirname)"
 
-exec "./transform/refresh/$.sh"
+./transform/refresh/$.sh

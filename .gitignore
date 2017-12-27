@@ -1,21 +1,8 @@
-# dest
-/www
+# dist
+/dist/**
 
 # temp
 /temp
 
-# cordova-icon artifacts
-/platform
-
-# cordova platforms
-/platforms
-
-# cordova plugins
-/plugins
-
 # npm modules
 /node_modules
-
-# assets
-/src/assets/**
-**/src/assets/**

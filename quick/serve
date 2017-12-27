@@ -2,4 +2,7 @@
 cd "$(sudo dirname "$(readlink -f "$0")")"
 cd ..
 
-exec "./transform/serve/$.sh"
+./transform/webapp/$.sh && ./transform/serve/$.sh || {
+	echo "webapp failed"
+	exit 1
+}

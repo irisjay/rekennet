@@ -10,12 +10,12 @@ nvm use 7.1.0 > /dev/null
 	exit 1
 }
 
-[ -d "${package_root}/dist/build/hci" ] || {
-	echo "dist/build/hci doesn't exist"
+[ -d "${package_root}/dist/cordova/$" ] || {
+	echo "dist/cordova/$ doesn't exist"
 	exit 1
 }
 
-node "$.js" || {
-	echo "webapp failed"
+./_$.sh || {
+	echo "cordova/ios failed"
 	exit 1
 }
