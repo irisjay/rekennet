@@ -140,7 +140,7 @@
         flasher .add (flash .play ());
         
         stream_from_click_on (save) .thru (tap, function () {
-            api .bmi .to ((api .bmi .from () || []) .concat ([[+ new Date (), bmi .querySelector ('[text]') .textContent]]));
+            api () .bmi .to ((api () .bmi .from () || []) .concat ([[+ new Date (), bmi .querySelector ('[text]') .textContent]]));
             flasher .tweenFromTo (0, 0.3);
         });
         var showing = interaction_case ({
@@ -169,7 +169,7 @@
             return new Date (d);
         };
 
-        mergeAll ([stream (api .bmi .from ()), api .bmi .from])
+        mergeAll ([stream (api () .bmi .from ()), api () .bmi .from])
             .thru (map, R .cond ([
                 [R .is (Array), R .pipe (
                     R .groupBy (function (record) {

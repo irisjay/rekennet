@@ -1,5 +1,6 @@
 add self documentation abt dependencies etc in transforms
 
+add src/cordova to refresh?
 
 #transforms remarks
 build (sync diving has race issues, very slow, congestion in resources right before diving. probably not enough memory after processing scss?)

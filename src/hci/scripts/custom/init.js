@@ -1,7 +1,7 @@
 /*
 Errors
 */
-var report = from (function (_) {
+window .report = [from (function (_) {
 	riot .util .tmpl .errorHandler = 	function (err) {
 	                                        err ._origin = 'riot-tmpl';
 	                                        _ (err);
@@ -17,11 +17,17 @@ var report = from (function (_) {
                             err ._origin = 'window';
                             _ (err);
 						};
-}) .thru (tap, function (e) {
+})] .map (tap (function (e) {
     console .error (e);
-});
+})) [0];
 
 //Promise .longStackTraces ();
+Promise.config({
+    // Enables all warnings except forgotten return statements.
+    warnings: {
+        wForgottenReturn: false
+    }
+});
 
 /*
 Use app
@@ -35,6 +41,9 @@ Use app
 	        document .addEventListener ('DOMContentLoaded', x);
 	    })		
 )
+/*.then (function () {
+	return restoration
+})*/
 .then (function () {
 	window .ui_ = master_ui ();
 });
