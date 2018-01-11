@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+cd "$(sudo dirname "$(readlink -f "$0")")"
+cd "$(npm root | xargs dirname)"
+
+./transform/webapp/$.sh || {
+	echo "webapp failed"
+	exit 1
+} && ./transform/serve/$.sh 

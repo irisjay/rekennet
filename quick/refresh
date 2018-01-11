@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+cd "$(sudo dirname "$(readlink -f "$0")")"
+cd "$(npm root | xargs dirname)"
+
+./transform/refresh/$.sh
