@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-cd "$(dirname "$(readlink -f "$0")")"
+[[ `uname` == 'Darwin' ]] && { [ -d "/usr/local/opt/coreutils/libexec/gnubin" ] || { echo "gnu tools not found"; exit 1; } && PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"; }
+cd "$(dirname "$0")"
 
 package_root="$(npm root | xargs dirname)"
 
