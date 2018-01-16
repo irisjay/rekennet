@@ -11,6 +11,7 @@ else
 	exit 1
 fi
 
+. ~/.nvm/nvm.sh 
 cd "$(npm root | xargs dirname)"
 
 {

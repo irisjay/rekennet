@@ -2,6 +2,7 @@
 [[ `uname` == 'Darwin' ]] && { [ -d "/usr/local/opt/coreutils/libexec/gnubin" ] || { echo "gnu tools not found"; exit 1; } && PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"; }
 cd "$(dirname "$0")"
 
+. ~/.nvm/nvm.sh 
 package_root="$(npm root | xargs dirname)"
 
 if [ -d "${package_root}/dist/cordova/android" ]; then
