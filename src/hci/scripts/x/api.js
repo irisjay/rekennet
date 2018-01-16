@@ -3,7 +3,7 @@
 
 var routes = {
     default: '#404',
-    404: '#404'
+    four_o_four: '#404'
 }
 var _routing = {};
 
