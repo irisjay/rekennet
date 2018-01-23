@@ -2,7 +2,7 @@
 Errors
 */
 window .report = [from (function (_) {
-	riot .util .tmpl .errorHandler =	function (err) {
+	riot .util .tmpl .errorHandler = 	function (err) {
 	                                        err ._origin = 'riot-tmpl';
 	                                        _ (err);
 										}
@@ -45,5 +45,5 @@ Use app
 	return restoration
 })*/
 .then (function () {
-	window .ui_ = window .uis .$ ();
+	window .ui_ = master_ui ();
 });
